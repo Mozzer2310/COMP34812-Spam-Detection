@@ -183,7 +183,9 @@ if __name__ == "__main__":
                 authors.append(row["username"])
                 titles.append(row["video_name"])
                 classes.append(row["class"])
-                # Add code to read contexts when thats done
+                # TODO: Add code to read contexts when thats done
+                # - Probably store as video_id context pair of some form
+                # - when next/prev is pressed display the context per video_id
                 contexts.append("")
 
     createWindow()
