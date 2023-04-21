@@ -176,7 +176,7 @@ if __name__ == "__main__":
     filename = input("Please enter a filename for the CSV: ")
     if filename[-4:] != '.csv':
         filename += '.csv'
-    filename = "data/labelled/" + filename
+    filename = "../data/labelled/" + filename
     with open(filename, mode='r', encoding='utf8') as csv_file:
         csv_reader = csv.DictReader(csv_file)
         line_count = 0

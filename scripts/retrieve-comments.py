@@ -1,4 +1,4 @@
-import config
+import unstaged.config as config
 import csv
 import googleapiclient.discovery
 from datetime import datetime
@@ -146,7 +146,7 @@ if __name__ == "__main__":
     csv_filename = input("Please enter a filename for the CSV: ")
     if csv_filename[-4:] != '.csv':
         csv_filename += '.csv'
-    csv_filename = "data/comments/" + csv_filename
+    csv_filename = "../data/comments/" + csv_filename
 
     file_exists = os.path.isfile(csv_filename)
     if not file_exists:
