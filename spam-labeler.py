@@ -3,7 +3,6 @@ import csv
 from tempfile import NamedTemporaryFile
 import shutil
 
-filename = "data/comments.csv"
 fields = ["video_id", "video_name",
               "comment_id", "comment", "username", "class"]
 index = 0
@@ -166,13 +165,18 @@ def createWindow():
 
 
 if __name__ == "__main__":
-    global commentIDs, comments, authors, contexts, titles
+    global commentIDs, comments, authors, contexts, titles, filename
     commentIDs = []
     comments = []
     authors = []
     contexts = []
     titles = []
     classes = []
+    
+    filename = input("Please enter a filename for the CSV: ")
+    if filename[-4:] != '.csv':
+        filename += '.csv'
+    filename = "data/labelled/" + filename
     with open(filename, mode='r', encoding='utf8') as csv_file:
         csv_reader = csv.DictReader(csv_file)
         line_count = 0
