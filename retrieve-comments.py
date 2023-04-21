@@ -1,6 +1,8 @@
 import config
 import csv
 import googleapiclient.discovery
+from datetime import datetime
+import os.path
 
 api_service_name = "youtube"
 api_version = "v3"
@@ -10,7 +12,7 @@ youtube = googleapiclient.discovery.build(
     api_service_name, api_version, developerKey=DEVELOPER_KEY)
 
 
-csv_filename = 'data/comments.csv'
+# csv_filename = 'data/comments.csv'
 fieldnames = ["video_id", "video_name",
               "comment_id", "comment", "username", "class"]
 
@@ -137,9 +139,47 @@ def getComments(videoId: str):
 
 
 if __name__ == "__main__":
-    with open(csv_filename, 'w', newline='') as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        writer.writeheader()
+    global csv_filename
+    global num_comments
+    num_comments = 0
 
-    getComments(videoId="9ehTRKTXheI")
-    getComments(videoId="vfs9GW488pM")
+    csv_filename = input("Please enter a filename for the CSV: ")
+    if csv_filename[-4:] != '.csv':
+        csv_filename += '.csv'
+    csv_filename = "data/comments/" + csv_filename
+
+    file_exists = os.path.isfile(csv_filename)
+    if not file_exists:
+        with open(csv_filename, 'a', newline='') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+    else:
+        with open(csv_filename, mode='r', encoding='utf8') as csv_file:
+            csv_reader = csv.DictReader(csv_file)
+            for row in csv_reader:
+                num_comments += 1
+
+    current_line_count = num_comments
+    while(True):
+        input_video_id = input("(Press Enter to skip) Enter a video ID: ")
+        if(input_video_id == ""):
+            break
+        getComments(videoId=input_video_id)
+        print("Complete")
+        now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        print(f"Time: {now}")
+
+        with open(csv_filename, mode='r', encoding='utf8') as csv_file:
+            csv_reader = csv.DictReader(csv_file)
+            line_count = 0
+            for row in csv_reader:
+                line_count += 1
+        print(f"No. Comments: {line_count - current_line_count}")
+        current_line_count += line_count
+
+    with open(csv_filename, mode='r', encoding='utf8') as csv_file:
+        csv_reader = csv.DictReader(csv_file)
+        line_count = 0
+        for row in csv_reader:
+            line_count += 1
+    print(f"Total No. Comments: {line_count}")
