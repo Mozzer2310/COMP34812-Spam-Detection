@@ -1,0 +1,1 @@
+Use this folder along with spam labeler, put you `.csv` file in the labelled folder and running `spam-labeler.py` will allow you to label the comments.
