@@ -81,7 +81,7 @@ def createWindow():
     root.maxsize(900,  600)  # width x height
 
     # The comment information goes in this frame
-    top_frame = tk.Frame(root,  width=790,  height=395,  bg='grey')
+    top_frame = tk.Frame(root,  width=790,  height=595,  bg='grey')
     top_frame.grid(row=0,  column=0,  padx=10,  pady=5)
 
     # The buttons go in this frame
