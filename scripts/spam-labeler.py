@@ -75,6 +75,27 @@ def btnPrev(commentIDText, commentText, authorText, contextText, titleText, clas
     classText.set(classes[index])
     index += 1
 
+def btnClear(commentIDText, commentText, authorText, contextText, titleText, classText):
+    '''if button is clicked, display message'''
+    print("Clear.")
+
+    tempfile = NamedTemporaryFile(mode='w', delete=False)
+
+    with open(filename, 'r') as csvfile, tempfile:
+        reader = csv.DictReader(csvfile, fieldnames=fields)
+        writer = csv.DictWriter(tempfile, fieldnames=fields)
+        for row in reader:
+            if row['comment_id'] == str(commentIDText.get()):
+                print('updating row', row['comment_id'])
+                row['class'] = "0"
+                classes[index-1] = "0"
+            row = {'video_id': row['video_id'], 'video_name': row['video_name'], 'comment_id': row['comment_id'], 'comment': row['comment'], 'username': row['username'], 'class': row['class']}
+            writer.writerow(row)
+
+    classText.set(classes[index-1])
+
+    shutil.move(tempfile.name, filename)
+
 def createWindow():
     root = tk.Tk()  # create root window
     root.title("Label Comments")
@@ -96,14 +117,16 @@ def createWindow():
     classText = tk.StringVar()
 
     # Buttons
-    tk.Button(bottom_frame, text="PREV", command=lambda: btnPrev(commentIDText, commentText, authorText, contextText, titleText, classText)).grid(
+    tk.Button(bottom_frame, text="CLEAR", command=lambda: btnClear(commentIDText, commentText, authorText, contextText, titleText, classText)).grid(
         row=0, column=0, padx=5,  pady=5,  sticky='w'+'e'+'n'+'s')
-    tk.Button(bottom_frame, text="SPAM", command=lambda: btnSpam(commentIDText, commentText, authorText, contextText, titleText, classText), bg='firebrick3', activebackground='firebrick1').grid(
+    tk.Button(bottom_frame, text="PREV", command=lambda: btnPrev(commentIDText, commentText, authorText, contextText, titleText, classText)).grid(
         row=0, column=1, padx=5,  pady=5,  sticky='w'+'e'+'n'+'s')
-    tk.Button(bottom_frame, text="HAM", command=lambda: btnHam(commentIDText, commentText, authorText, contextText, titleText, classText), bg='chartreuse4', activebackground='chartreuse3').grid(
+    tk.Button(bottom_frame, text="SPAM", command=lambda: btnSpam(commentIDText, commentText, authorText, contextText, titleText, classText), bg='firebrick3', activebackground='firebrick1').grid(
         row=0, column=2, padx=5,  pady=5,  sticky='w'+'e'+'n'+'s')
-    tk.Button(bottom_frame, text="NEXT", command=lambda: btnNext(commentIDText, commentText, authorText, contextText, titleText, classText)).grid(
+    tk.Button(bottom_frame, text="HAM", command=lambda: btnHam(commentIDText, commentText, authorText, contextText, titleText, classText), bg='chartreuse4', activebackground='chartreuse3').grid(
         row=0, column=3, padx=5,  pady=5,  sticky='w'+'e'+'n'+'s')
+    tk.Button(bottom_frame, text="NEXT", command=lambda: btnNext(commentIDText, commentText, authorText, contextText, titleText, classText)).grid(
+        row=0, column=4, padx=5,  pady=5,  sticky='w'+'e'+'n'+'s')
 
     # Comment Information
     # Comment ID
