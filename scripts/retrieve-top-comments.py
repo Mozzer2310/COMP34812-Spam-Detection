@@ -29,7 +29,7 @@ def getComments(videoId: str):
 
     request = youtube.commentThreads().list(
         part="snippet",
-        maxResults=50,
+        maxResults=100,
         order="relevance",
         videoId=videoId
     )
@@ -63,7 +63,7 @@ def getComments(videoId: str):
                 if numreplies > 0:
                     request = youtube.comments().list(
                         part="snippet",
-                        maxResults=10,
+                        maxResults=8,
                         parentId=useful['id']
                     )
                     response = request.execute()
