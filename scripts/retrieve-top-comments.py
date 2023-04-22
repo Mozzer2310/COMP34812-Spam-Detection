@@ -40,8 +40,11 @@ def getComments(videoId: str):
     with open(csv_filename, 'a', newline='') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
+        index = 0
         total_replies = 0
         for item in comments:
+            if index >= 50:
+                return
             useful = item["snippet"]["topLevelComment"]
             commentID = useful['id']
             commentText = useful['snippet']['textOriginal']
@@ -54,6 +57,7 @@ def getComments(videoId: str):
                 "username": username,
                 "class": 0
             })
+            index += 1
             if not total_replies >= 50:
                 numreplies = item['snippet']['totalReplyCount']
                 if numreplies > 0:
@@ -66,6 +70,8 @@ def getComments(videoId: str):
                     replies = response["items"]
 
                     for reply in replies:
+                        if index >= 50:
+                            return
                         useful = reply["snippet"]
                         replyId = reply["id"]
                         replyText = useful['textOriginal']
@@ -78,6 +84,7 @@ def getComments(videoId: str):
                             "username": username,
                             "class": 0
                         })
+                        index += 1
                 total_replies += numreplies
 
 
