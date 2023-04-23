@@ -35,8 +35,10 @@ def get_comments_from_csv(file_name):
     for video_id in video_ids:
         query = f"video_id=='{video_id}'"
         comments = list(df.query(query)['comment'])
+        video_name = df.query(query)['video_name'].iloc[0]
+        video_name_dict[video_id] = video_name
+        comments.append(video_name)
         comments_by_videoid[video_id] = comments
-        video_name_dict[video_id] = list(df.query(query)['video_name'].head(1))[0]
 
     return comments_by_videoid, video_name_dict
 
@@ -127,7 +129,7 @@ def get_topics(comments_dict):
         
     return topics_dict
 
-def output_to_csv(topics_dict, video_name_dict, file_name='topics.csv'):
+def output_to_csv(topics_dict, video_name_dict, file_name='topics'):
     """Write topics dictionary to a .csv file
     Args:
         comments_dict (dict): dictionary mapping from video ID to its list of comments
@@ -139,7 +141,7 @@ def output_to_csv(topics_dict, video_name_dict, file_name='topics.csv'):
     file_path = OUTPUT_PATH+file_name
 
     # Write to .csv file
-    with open(file_path, 'w', newline='') as file:
+    with open(f"{file_name}_topics.csv", 'w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(["video_id", "video_name", "topic_keywords"])
         for video_id in topics_dict.keys():
@@ -149,6 +151,6 @@ if __name__ == "__main__":
     csv_filename = input("Please enter a filename for the CSV: ")     
     comments_dict, video_name_dict = get_comments_from_csv(csv_filename)
     topics_dict = get_topics(comments_dict)
-    output_to_csv(topics_dict, video_name_dict)
+    output_to_csv(topics_dict, video_name_dict, file_name=csv_filename)
 
 
