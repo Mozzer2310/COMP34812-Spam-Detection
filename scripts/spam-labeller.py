@@ -88,7 +88,7 @@ def btnNext(commentIDText, commentText, authorText, contextText, titleText, clas
     '''if button is clicked, display message'''
     print("Next.")
     commentIDText.set(commentIDs[index])
-    commentText.set(comments[index])
+    commentText.set(comments[index][:400])
     authorText.set(authors[index])
     contextText.set(contexts[index])
     titleText.set(titles[index])
@@ -101,7 +101,7 @@ def btnPrev(commentIDText, commentText, authorText, contextText, titleText, clas
     print("Prev.")
     index += -2
     commentIDText.set(commentIDs[index])
-    commentText.set(comments[index])
+    commentText.set(comments[index][:400])
     authorText.set(authors[index])
     contextText.set(contexts[index])
     titleText.set(titles[index])
