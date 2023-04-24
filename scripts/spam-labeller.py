@@ -3,12 +3,12 @@ import csv
 from tempfile import NamedTemporaryFile
 import shutil
 
-fields = ["video_id", "video_name",
+fields = ["video_id", "video_name", "channel_name",
               "comment_id", "comment", "username", "class"]
 index = 0
 max_length = 400
 
-def btnHam(commentIDText, commentText, authorText, contextText, titleText, classText, countText):
+def btnHam(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText):
     global comment_count
     '''if button is clicked, display message'''
     print("Ham.")
@@ -31,10 +31,10 @@ def btnHam(commentIDText, commentText, authorText, contextText, titleText, class
     comment_count += 1
     countText.set(f"{comment_count}/{total_comments}")
 
-    btnNext(commentIDText, commentText, authorText, contextText, titleText, classText, countText)
+    btnNext(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText)
 
 
-def btnSpam(commentIDText, commentText, authorText, contextText, titleText, classText, countText):
+def btnSpam(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText):
     global comment_count
     '''if button is clicked, display message'''
     print("Spam.")
@@ -49,7 +49,14 @@ def btnSpam(commentIDText, commentText, authorText, contextText, titleText, clas
                 print('updating row', row['comment_id'])
                 row['class'] = "spam"
                 classes[index-1] = "spam"
-            row = {'video_id': row['video_id'], 'video_name': row['video_name'], 'comment_id': row['comment_id'], 'comment': row['comment'], 'username': row['username'], 'class': row['class']}
+            row = {
+                'video_id': row['video_id'],
+                'video_name': row['video_name'],
+                'channel_name': row['channel_name'],
+                'comment_id': row['comment_id'],
+                'comment': row['comment'],
+                'username': row['username'],
+                'class': row['class']}
             writer.writerow(row)
 
     shutil.move(tempfile.name, filename)
@@ -57,9 +64,9 @@ def btnSpam(commentIDText, commentText, authorText, contextText, titleText, clas
     comment_count += 1
     countText.set(f"{comment_count}/{total_comments}")
 
-    btnNext(commentIDText, commentText, authorText, contextText, titleText, classText, countText)
+    btnNext(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText)
 
-def btnNeutral(commentIDText, commentText, authorText, contextText, titleText, classText, countText):
+def btnNeutral(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText):
     global comment_count
     '''if button is clicked, display message'''
     print("Neutral.")
@@ -74,7 +81,14 @@ def btnNeutral(commentIDText, commentText, authorText, contextText, titleText, c
                 print('updating row', row['comment_id'])
                 row['class'] = "neutral"
                 classes[index-1] = "neutral"
-            row = {'video_id': row['video_id'], 'video_name': row['video_name'], 'comment_id': row['comment_id'], 'comment': row['comment'], 'username': row['username'], 'class': row['class']}
+            row = {
+                'video_id': row['video_id'],
+                'video_name': row['video_name'],
+                'channel_name': row['channel_name'],
+                'comment_id': row['comment_id'],
+                'comment': row['comment'],
+                'username': row['username'],
+                'class': row['class']}
             writer.writerow(row)
 
     shutil.move(tempfile.name, filename)
@@ -82,9 +96,9 @@ def btnNeutral(commentIDText, commentText, authorText, contextText, titleText, c
     comment_count += 1
     countText.set(f"{comment_count}/{total_comments}")
 
-    btnNext(commentIDText, commentText, authorText, contextText, titleText, classText, countText)
+    btnNext(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText)
 
-def btnNext(commentIDText, commentText, authorText, contextText, titleText, classText, countText):
+def btnNext(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText):
     global index
     '''if button is clicked, display message'''
     print("Next.")
@@ -94,9 +108,10 @@ def btnNext(commentIDText, commentText, authorText, contextText, titleText, clas
     contextText.set(contexts[index])
     titleText.set(titles[index])
     classText.set(classes[index])
+    channelText.set(channels[index])
     index += 1
 
-def btnPrev(commentIDText, commentText, authorText, contextText, titleText, classText, countText):
+def btnPrev(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText):
     global index
     '''if button is clicked, display message'''
     print("Prev.")
@@ -107,9 +122,10 @@ def btnPrev(commentIDText, commentText, authorText, contextText, titleText, clas
     contextText.set(contexts[index])
     titleText.set(titles[index])
     classText.set(classes[index])
+    channelText.set(channels[index])
     index += 1
 
-def btnClear(commentIDText, commentText, authorText, contextText, titleText, classText, countText):
+def btnClear(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText):
     global comment_count
     '''if button is clicked, display message'''
     print("Clear.")
@@ -124,7 +140,14 @@ def btnClear(commentIDText, commentText, authorText, contextText, titleText, cla
                 print('updating row', row['comment_id'])
                 row['class'] = "0"
                 classes[index-1] = "0"
-            row = {'video_id': row['video_id'], 'video_name': row['video_name'], 'comment_id': row['comment_id'], 'comment': row['comment'], 'username': row['username'], 'class': row['class']}
+            row = {
+                'video_id': row['video_id'],
+                'video_name': row['video_name'],
+                'channel_name': row['channel_name'],
+                'comment_id': row['comment_id'],
+                'comment': row['comment'],
+                'username': row['username'],
+                'class': row['class']}
             writer.writerow(row)
 
     classText.set(classes[index-1])
@@ -157,6 +180,7 @@ def createWindow():
     contextText = tk.StringVar()
     titleText = tk.StringVar()
     classText = tk.StringVar()
+    channelText = tk.StringVar()
     countText = tk.StringVar()
     countText.set(f"{comment_count}/{total_comments}")
 
@@ -168,17 +192,17 @@ def createWindow():
     tk.Label(internal_count_frame, textvariable=countText).grid(row=0, column=1, padx=5, pady=5, sticky='w'+'e'+'n'+'s')
 
     # Buttons
-    tk.Button(bottom_frame, text="CLEAR", command=lambda: btnClear(commentIDText, commentText, authorText, contextText, titleText, classText, countText)).grid(
+    tk.Button(bottom_frame, text="CLEAR", command=lambda: btnClear(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText)).grid(
         row=0, column=0, padx=5,  pady=5,  sticky='w'+'e'+'n'+'s')
-    tk.Button(bottom_frame, text="PREV", command=lambda: btnPrev(commentIDText, commentText, authorText, contextText, titleText, classText, countText)).grid(
+    tk.Button(bottom_frame, text="PREV", command=lambda: btnPrev(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText)).grid(
         row=0, column=1, padx=5,  pady=5,  sticky='w'+'e'+'n'+'s')
-    tk.Button(bottom_frame, text="SPAM", command=lambda: btnSpam(commentIDText, commentText, authorText, contextText, titleText, classText, countText), bg='firebrick3', activebackground='firebrick1').grid(
+    tk.Button(bottom_frame, text="SPAM", command=lambda: btnSpam(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText), bg='firebrick3', activebackground='firebrick1').grid(
         row=0, column=2, padx=5,  pady=5,  sticky='w'+'e'+'n'+'s')
-    tk.Button(bottom_frame, text="HAM", command=lambda: btnHam(commentIDText, commentText, authorText, contextText, titleText, classText, countText), bg='chartreuse4', activebackground='chartreuse3').grid(
+    tk.Button(bottom_frame, text="HAM", command=lambda: btnHam(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText), bg='chartreuse4', activebackground='chartreuse3').grid(
         row=0, column=3, padx=5,  pady=5,  sticky='w'+'e'+'n'+'s')
-    tk.Button(bottom_frame, text="NEUTRAL", command=lambda: btnNeutral(commentIDText, commentText, authorText, contextText, titleText, classText, countText), bg='slate blue', activebackground='light slate blue').grid(
+    tk.Button(bottom_frame, text="NEUTRAL", command=lambda: btnNeutral(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText), bg='slate blue', activebackground='light slate blue').grid(
         row=0, column=4, padx=5,  pady=5,  sticky='w'+'e'+'n'+'s')
-    tk.Button(bottom_frame, text="NEXT", command=lambda: btnNext(commentIDText, commentText, authorText, contextText, titleText, classText, countText)).grid(
+    tk.Button(bottom_frame, text="NEXT", command=lambda: btnNext(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText)).grid(
         row=0, column=5, padx=5,  pady=5,  sticky='w'+'e'+'n'+'s')
 
     # Comment Information
@@ -199,10 +223,19 @@ def createWindow():
         row=0, column=0, padx=5,  pady=5,  sticky='w'+'e'+'n'+'s')
     tk.Label(title_frame, textvariable=titleText, wraplength=500, justify=tk.LEFT).grid(
         row=0, column=1, padx=5,  pady=5, sticky='w'+'e'+'n'+'s')
+    
+    # Video Channel Name
+    channel_frame = tk.Frame(top_frame)
+    channel_frame.grid(row=2, column=0, padx=5, pady=5)
+
+    tk.Label(channel_frame, text="Channel Name:").grid(
+        row=0, column=0, padx=5,  pady=5,  sticky='w'+'e'+'n'+'s')
+    tk.Label(channel_frame, textvariable=channelText, wraplength=500, justify=tk.LEFT).grid(
+        row=0, column=1, padx=5,  pady=5, sticky='w'+'e'+'n'+'s')
 
     # Video Context
     context_frame = tk.Frame(top_frame)
-    context_frame.grid(row=2, column=0, padx=5, pady=5)
+    context_frame.grid(row=3, column=0, padx=5, pady=5)
 
     tk.Label(context_frame, text="Video Context:").grid(
         row=0, column=0, padx=5,  pady=5,  sticky='w'+'e'+'n'+'s')
@@ -211,7 +244,7 @@ def createWindow():
 
     # Comment Author
     user_frame = tk.Frame(top_frame)
-    user_frame.grid(row=3, column=0, padx=5, pady=5)
+    user_frame.grid(row=4, column=0, padx=5, pady=5)
 
     tk.Label(user_frame, text="Username:").grid(
         row=0, column=0, padx=5,  pady=5,  sticky='w'+'e'+'n'+'s')
@@ -220,7 +253,7 @@ def createWindow():
 
     # Current Label
     class_frame = tk.Frame(top_frame)
-    class_frame.grid(row=4, column=0, padx=5, pady=5)
+    class_frame.grid(row=5, column=0, padx=5, pady=5)
 
     tk.Label(class_frame, text="CURRENT CLASS:").grid(
         row=0, column=0, padx=5,  pady=5,  sticky='w'+'e'+'n'+'s')
@@ -229,7 +262,7 @@ def createWindow():
 
     # Comment
     comment_frame = tk.Frame(top_frame)
-    comment_frame.grid(row=5, column=0, padx=5, pady=5)
+    comment_frame.grid(row=6, column=0, padx=5, pady=5)
 
     tk.Label(comment_frame, text="Comment:").grid(
         row=0, column=0, padx=5,  pady=5,  sticky='w'+'e'+'n'+'s')
@@ -240,13 +273,14 @@ def createWindow():
 
 
 if __name__ == "__main__":
-    global commentIDs, comments, authors, contexts, titles, filename, total_comments, comment_count
+    global commentIDs, comments, authors, contexts, titles, channels, filename, total_comments, comment_count
     commentIDs = []
     comments = []
     authors = []
     contexts = []
     titles = []
     classes = []
+    channels = []
     comment_count = 0
     
     filename = input("Please enter a filename for the CSV: ")
@@ -264,6 +298,7 @@ if __name__ == "__main__":
                 authors.append(row["username"])
                 titles.append(row["video_name"])
                 classes.append(row["class"])
+                channels.append(row['channel_name'])
                 # TODO: Add code to read contexts when thats done
                 # - Probably store as video_id context pair of some form
                 # - when next/prev is pressed display the context per video_id
