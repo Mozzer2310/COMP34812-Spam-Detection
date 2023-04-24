@@ -50,6 +50,27 @@ def btnSpam(commentIDText, commentText, authorText, contextText, titleText, clas
 
     btnNext(commentIDText, commentText, authorText, contextText, titleText, classText)
 
+def btnNeutral(commentIDText, commentText, authorText, contextText, titleText, classText):
+    '''if button is clicked, display message'''
+    print("Neutral.")
+
+    tempfile = NamedTemporaryFile(mode='w', delete=False)
+
+    with open(filename, 'r') as csvfile, tempfile:
+        reader = csv.DictReader(csvfile, fieldnames=fields)
+        writer = csv.DictWriter(tempfile, fieldnames=fields)
+        for row in reader:
+            if row['comment_id'] == str(commentIDText.get()):
+                print('updating row', row['comment_id'])
+                row['class'] = "neutral"
+                classes[index-1] = "neutral"
+            row = {'video_id': row['video_id'], 'video_name': row['video_name'], 'comment_id': row['comment_id'], 'comment': row['comment'], 'username': row['username'], 'class': row['class']}
+            writer.writerow(row)
+
+    shutil.move(tempfile.name, filename)
+
+    btnNext(commentIDText, commentText, authorText, contextText, titleText, classText)
+
 def btnNext(commentIDText, commentText, authorText, contextText, titleText, classText):
     global index
     '''if button is clicked, display message'''
@@ -125,8 +146,10 @@ def createWindow():
         row=0, column=2, padx=5,  pady=5,  sticky='w'+'e'+'n'+'s')
     tk.Button(bottom_frame, text="HAM", command=lambda: btnHam(commentIDText, commentText, authorText, contextText, titleText, classText), bg='chartreuse4', activebackground='chartreuse3').grid(
         row=0, column=3, padx=5,  pady=5,  sticky='w'+'e'+'n'+'s')
-    tk.Button(bottom_frame, text="NEXT", command=lambda: btnNext(commentIDText, commentText, authorText, contextText, titleText, classText)).grid(
+    tk.Button(bottom_frame, text="NEUTRAL", command=lambda: btnNeutral(commentIDText, commentText, authorText, contextText, titleText, classText), bg='slate blue', activebackground='light slate blue').grid(
         row=0, column=4, padx=5,  pady=5,  sticky='w'+'e'+'n'+'s')
+    tk.Button(bottom_frame, text="NEXT", command=lambda: btnNext(commentIDText, commentText, authorText, contextText, titleText, classText)).grid(
+        row=0, column=5, padx=5,  pady=5,  sticky='w'+'e'+'n'+'s')
 
     # Comment Information
     # Comment ID
