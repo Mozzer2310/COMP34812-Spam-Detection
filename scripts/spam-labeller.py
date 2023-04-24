@@ -6,6 +6,7 @@ import shutil
 fields = ["video_id", "video_name",
               "comment_id", "comment", "username", "class"]
 index = 0
+max_length = 400
 
 def btnHam(commentIDText, commentText, authorText, contextText, titleText, classText, countText):
     global comment_count
@@ -88,7 +89,7 @@ def btnNext(commentIDText, commentText, authorText, contextText, titleText, clas
     '''if button is clicked, display message'''
     print("Next.")
     commentIDText.set(commentIDs[index])
-    commentText.set(comments[index][:400])
+    commentText.set(comments[index][:max_length])
     authorText.set(authors[index])
     contextText.set(contexts[index])
     titleText.set(titles[index])
@@ -101,7 +102,7 @@ def btnPrev(commentIDText, commentText, authorText, contextText, titleText, clas
     print("Prev.")
     index += -2
     commentIDText.set(commentIDs[index])
-    commentText.set(comments[index][:400])
+    commentText.set(comments[index][:max_length])
     authorText.set(authors[index])
     contextText.set(contexts[index])
     titleText.set(titles[index])
