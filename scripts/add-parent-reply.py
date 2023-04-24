@@ -7,7 +7,7 @@ fields = ["video_id", "video_name",
 
 
 if __name__ == "__main__":
-    filename = input("Please enter the filepath and filename for the CSV")
+    filename = input("Please enter the filepath and filename for the CSV: ")
     if filename[-4:] != '.csv':
         filename += '.csv'
 
