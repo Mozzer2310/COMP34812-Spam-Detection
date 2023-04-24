@@ -30,7 +30,6 @@ if __name__ == "__main__":
             for id in comment_ids:
                 if id in row['comment_id'] and id != row["comment_id"]:
                     index = comment_ids.index(id)
-                    print('updating row', row['comment_id'])
                     row['comment'] = "[MAIN] " + comments[index] + " [REPLY] " + row["comment"]
             row = {'video_id': row['video_id'], 'video_name': row['video_name'], 'comment_id': row['comment_id'], 'comment': row['comment'], 'username': row['username'], 'class': row['class']}
             writer.writerow(row)
