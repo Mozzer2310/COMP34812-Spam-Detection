@@ -23,7 +23,14 @@ def btnHam(commentIDText, commentText, authorText, contextText, titleText, class
                 print('updating row', row['comment_id'])
                 row['class'] = "ham"
                 classes[index-1] = "ham"
-            row = {'video_id': row['video_id'], 'video_name': row['video_name'], 'comment_id': row['comment_id'], 'comment': row['comment'], 'username': row['username'], 'class': row['class']}
+            row = {
+                'video_id': row['video_id'],
+                'video_name': row['video_name'],
+                'channel_name': row['channel_name'],
+                'comment_id': row['comment_id'],
+                'comment': row['comment'],
+                'username': row['username'],
+                'class': row['class']}
             writer.writerow(row)
 
     shutil.move(tempfile.name, filename)
