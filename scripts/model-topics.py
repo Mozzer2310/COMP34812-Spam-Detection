@@ -7,6 +7,7 @@ from gensim.parsing.preprocessing import preprocess_string, strip_punctuation,st
 import spacy
 import pyLDAvis
 import pyLDAvis.gensim 
+import string
 
 # NLTK Stop words
 from nltk.corpus import stopwords
@@ -14,13 +15,12 @@ stop_words = stopwords.words('english')
 stop_words.extend(['from', 'subject', 're', 'edu', 'use'])
 
 
-def get_comments_from_csv(file_name):
-    """Retrieve comment data from a specified .csv file
+def get_data_from_csv(file_name):
+    """Retrieve dataset from a specified .csv file
     Args:
         file_name (str): .csv file name
     Returns:
-        comments_by_videoid (dict): dictionary mapping from video ID to its list of comments
-        video_name_dict (dict): dictionary mapping from video ID its video name
+        dataset (dict): mapping from video_id to all of its data
     """
     # Read CSV file
     DATA_PATH = '../data/labelled/'
@@ -28,19 +28,21 @@ def get_comments_from_csv(file_name):
         file_name += '.csv'
     df = pd.read_csv(DATA_PATH+file_name)
     
-    # Create a dictionary mapping from video_id to their comments
-    comments_by_videoid = dict()
-    video_name_dict = dict()
+    # Create a dictionary mapping from video_id to a dict containing data about items in columns 'comment','video_name','channel_name'
+    dataset = dict()
     video_ids = list(df['video_id'].unique())
     for video_id in video_ids:
+        video_data = dict()
         query = f"video_id=='{video_id}'"
-        comments = list(df.query(query)['comment'])
-        video_name = df.query(query)['video_name'].iloc[0]
-        video_name_dict[video_id] = video_name
-        comments.append(video_name)
-        comments_by_videoid[video_id] = comments
+        for col in ['comments','video_name','channel_name']:
+            if col == 'comments':
+                item = list(df.query(query)['comment'])
+            else:
+                item =  df.query(query)[col].iloc[0]
+            video_data[col] = item
+        dataset[video_id] = video_data
 
-    return comments_by_videoid, video_name_dict
+    return dataset
 
 def tokenize_sentences(sentences):
     """Tokenize a list of a sentences
@@ -50,7 +52,7 @@ def tokenize_sentences(sentences):
         (generator): generator object of tokenized sentences
     """
     for sentence in sentences:
-        yield(gensim.utils.simple_preprocess(str(sentence), deacc=True)) # deacc=True removes punctations
+        yield(simple_preprocess(str(sentence), deacc=True)) # deacc=True removes punctations
 
 def lemmatize_bigrams(comments_bigrams, allowed_postags=['NOUN', 'ADJ']):
     """Lemmatize a list of bigrams
@@ -70,7 +72,7 @@ def lemmatize_bigrams(comments_bigrams, allowed_postags=['NOUN', 'ADJ']):
         lemmatized.append([token.lemma_ for token in comments_all if token.pos_ in allowed_postags])
     return lemmatized
 
-def get_topics(comments_dict):
+def get_topics(dataset_dict):
     """Retrieve a list of topic keywords
     Args:
         comments_dict (dict): dictionary mapping from video ID to its list of comments
@@ -78,7 +80,7 @@ def get_topics(comments_dict):
         topics_dict (dict):  dictionary mapping from video ID to a list of topic keywords
     """
     topics_dict = dict()
-    video_ids = comments_dict.keys()
+    video_ids = dataset_dict.keys()
     filters = [lambda x: x.lower(), strip_punctuation, strip_numeric]
 
     # Total number of keywords for a video is NUM_TOPICS * WORDS_PER_TOPIC
@@ -88,7 +90,7 @@ def get_topics(comments_dict):
     for i,video_id in enumerate(video_ids):
         print(f"Processing {i+1}/{len(video_ids)} ({video_id})")
         # Tokenize comments
-        comments_tokenized = list(tokenize_sentences(comments_dict[video_id]))
+        comments_tokenized = list(tokenize_sentences(dataset_dict[video_id]['comments']))
         
         # Build bigram models
         bigram = gensim.models.Phrases(comments_tokenized, min_count=5, threshold=100)
@@ -124,12 +126,21 @@ def get_topics(comments_dict):
         lda_topics = lda_model.show_topics(num_words=WORDS_PER_TOPIC)
         topics = [preprocess_string(topic[1], filters) for topic in lda_topics]
         combined_topics = [item for topic in topics for item in topic]
-        
-        topics_dict[video_id] = combined_topics
+
+        # Extend list of topics with terms from video title
+        title_keywords = [word for word in simple_preprocess(dataset_dict[video_id]['video_name']) if word not in stop_words]
+        combined_topics.extend(title_keywords)
+
+        # Extend list of topics with preprocessed channel name
+        preprocessed_name = dataset_dict[video_id]['channel_name'].lower()
+        preprocessed_name = preprocessed_name.translate(str.maketrans('', '', string.punctuation))
+        combined_topics.append(preprocessed_name)
+
+        topics_dict[video_id] = set(combined_topics)
         
     return topics_dict
 
-def output_to_csv(topics_dict, video_name_dict, file_name='topics'):
+def output_to_csv(topics_dict, dataset_dict, file_name='topics'):
     """Write topics dictionary to a .csv file
     Args:
         comments_dict (dict): dictionary mapping from video ID to its list of comments
@@ -138,19 +149,20 @@ def output_to_csv(topics_dict, video_name_dict, file_name='topics'):
     """
     # Specify output path
     OUTPUT_PATH = '../data/'
-    file_path = OUTPUT_PATH+file_name
 
     # Write to .csv file
-    with open(f"{file_name}_topics.csv", 'w', newline='') as file:
+    full_path = f"{OUTPUT_PATH}{file_name}-topics.csv"
+    with open(full_path, 'w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(["video_id", "video_name", "topic_keywords"])
         for video_id in topics_dict.keys():
-            writer.writerow([video_id, video_name_dict[video_id], ','.join(topics_dict[video_id])])
+            writer.writerow([video_id, dataset_dict[video_id]['video_name'], ','.join(topics_dict[video_id])])
+    print(f"CSV written to {full_path}")
 
 if __name__ == "__main__":
     csv_filename = input("Please enter a filename for the CSV: ")     
-    comments_dict, video_name_dict = get_comments_from_csv(csv_filename)
-    topics_dict = get_topics(comments_dict)
-    output_to_csv(topics_dict, video_name_dict, file_name=csv_filename)
+    dataset_dict = get_data_from_csv(csv_filename)
+    topics_dict = get_topics(dataset_dict)
+    output_to_csv(topics_dict, dataset_dict, file_name=csv_filename)
 
 
