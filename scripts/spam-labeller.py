@@ -8,6 +8,15 @@ fields = ["video_id", "video_name", "channel_name",
 index = 0
 max_length = 400
 
+def truncateComment(commentText):
+    partition = commentText.partition("[REPLY]")
+    if partition[1] == '':
+        return (commentText[:max_length*2] + '..(TRUNCATED)') if len(commentText) > max_length*2 else commentText
+    else:
+        mainText = (partition[0][:max_length] + '..(TRUNCATED)') if len(partition[0]) > max_length else partition[0]
+        replyText = (partition[2][:max_length] + '..(TRUNCATED)') if len(partition[2]) > max_length else partition[2]
+        return f"{mainText} [REPLY] {replyText}"
+
 def btnHam(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText):
     global comment_count
     '''if button is clicked, display message'''
@@ -110,7 +119,7 @@ def btnNext(commentIDText, commentText, authorText, contextText, titleText, clas
     '''if button is clicked, display message'''
     print("Next.")
     commentIDText.set(commentIDs[index])
-    commentText.set(comments[index][:max_length])
+    commentText.set(truncateComment(comments[index]))
     authorText.set(authors[index])
     contextText.set(contexts[index])
     titleText.set(titles[index])
@@ -124,7 +133,7 @@ def btnPrev(commentIDText, commentText, authorText, contextText, titleText, clas
     print("Prev.")
     index += -2
     commentIDText.set(commentIDs[index])
-    commentText.set(comments[index][:max_length])
+    commentText.set(truncateComment(comments[index]))
     authorText.set(authors[index])
     contextText.set(contexts[index])
     titleText.set(titles[index])
