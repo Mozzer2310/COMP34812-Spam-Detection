@@ -17,10 +17,10 @@ We retreieved the context for each video using the Latent Dirichlet Allocation (
 <!-- Explain the general model, any deviations from the proposal -->
 The model used in the implementation is created from fine-tuning DistilBERT (a smaller and faster version of the BERT model) to our custom dataset for a pair-wise sequence classification task. The two inputs to the model are: a tokenized, padded format of the comment (including username, comment and reply) and the list of topic keywords. A parsed format of the comment looks like one of the two following examples (one with no reply and one with a reply):
 
-  * [CLS] [USER] username [MAIN] main comment [SEP] keyword1, keywordd2, keyword 3, ... [SEP] [PAD] [PAD] [PAD] ...
-  * [CLS] [USER] username [MAIN] main comment [REPLY] replied comment [SEP] keyword1, keywordd2, keyword 3, ... [SEP] [PAD] [PAD] [PAD] ...
+  * [CLS] [USER] username [MAIN] main comment [SEP] keyword1, keywordd2, keyword 3, ... [SEP] [PAD] [PAD] ...
+  * [CLS] [USER] username [MAIN] main comment [REPLY] replied comment [SEP] keyword1, keyword2, keyword 3, ... [SEP] [PAD] [PAD]  ...
 
-Custom tokens ([USER], [MAIN] and [REPLY]) were added to the pre-existing DistilBERT tokenizer in order to separate the contents of the comment.
+Custom tokens ([USER], [MAIN] and [REPLY]) were added to the pre-existing DistilBERT tokenizer in order to separate the contents of the comment. 
 
 ## Showcase
 <!-- Explain what the demo is, and its purpose -->
