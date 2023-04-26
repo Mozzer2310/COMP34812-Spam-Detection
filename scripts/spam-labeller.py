@@ -76,8 +76,7 @@ def btnHam(commentIDText, commentText, authorText, contextText, titleText, class
     countText.set(f"{comment_count}/{total_comments}")
 
     # Goes to the next comment
-    btnNext(commentIDText, commentText, authorText, contextText,
-            titleText, classText, countText, channelText)
+    btnNext(commentIDText, commentText, authorText, contextText, titleText, classText, channelText)
 
 
 def btnSpam(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText):
@@ -127,8 +126,7 @@ def btnSpam(commentIDText, commentText, authorText, contextText, titleText, clas
     countText.set(f"{comment_count}/{total_comments}")
 
     # Goes to the next comment
-    btnNext(commentIDText, commentText, authorText, contextText,
-            titleText, classText, countText, channelText)
+    btnNext(commentIDText, commentText, authorText, contextText, titleText, classText, channelText)
 
 
 def btnNeutral(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText):
@@ -178,8 +176,7 @@ def btnNeutral(commentIDText, commentText, authorText, contextText, titleText, c
     countText.set(f"{comment_count}/{total_comments}")
 
     # Goes to the next comment
-    btnNext(commentIDText, commentText, authorText, contextText,
-            titleText, classText, countText, channelText)
+    btnNext(commentIDText, commentText, authorText, contextText, titleText, classText, channelText)
 
 
 def btnNext(commentIDText, commentText, authorText, contextText, titleText, classText, channelText):
@@ -322,9 +319,9 @@ def createWindow():
         row=0, column=1, padx=5, pady=5, sticky='w'+'e'+'n'+'s')
 
     # Buttons
-    tk.Button(bottom_frame, text="CLEAR", command=lambda: btnClear(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText)).grid(
+    tk.Button(bottom_frame, text="CLEAR", command=lambda: btnClear(commentIDText, classText, countText)).grid(
         row=0, column=0, padx=5,  pady=5,  sticky='w'+'e'+'n'+'s')
-    tk.Button(bottom_frame, text="PREV", command=lambda: btnPrev(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText)).grid(
+    tk.Button(bottom_frame, text="PREV", command=lambda: btnPrev(commentIDText, commentText, authorText, contextText, titleText, classText, channelText)).grid(
         row=0, column=1, padx=5,  pady=5,  sticky='w'+'e'+'n'+'s')
     tk.Button(bottom_frame, text="SPAM", command=lambda: btnSpam(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText), bg='firebrick3', activebackground='firebrick1').grid(
         row=0, column=2, padx=5,  pady=5,  sticky='w'+'e'+'n'+'s')
@@ -332,7 +329,7 @@ def createWindow():
         row=0, column=3, padx=5,  pady=5,  sticky='w'+'e'+'n'+'s')
     tk.Button(bottom_frame, text="NEUTRAL", command=lambda: btnNeutral(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText), bg='slate blue', activebackground='light slate blue').grid(
         row=0, column=4, padx=5,  pady=5,  sticky='w'+'e'+'n'+'s')
-    tk.Button(bottom_frame, text="NEXT", command=lambda: btnNext(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText)).grid(
+    tk.Button(bottom_frame, text="NEXT", command=lambda: btnNext(commentIDText, commentText, authorText, contextText, titleText, classText, channelText)).grid(
         row=0, column=5, padx=5,  pady=5,  sticky='w'+'e'+'n'+'s')
 
     # Comment Information
