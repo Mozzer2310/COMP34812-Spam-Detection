@@ -2,7 +2,7 @@
 
 | Script | Purpose |
 | ------ | ------- |
-| `model-topics.py` | |
+| `model-topics.py` | This script generates the context of a video, making use of the comments, the video title, and the channel name |
 | `retrieve-comments.py` | This scripts allows the user to input YouTube video IDs, then all the comments of that video are retrieved and their useful data is put into a `.csv` file in `data/comments`. |
 | `retrieve-top-comments.py` | This script does the same as the above except only the top 50 comments of a video are obtained |
 | `add-parent-reply.py` | This script runs on the output `csv` of either `retrive` files, it takes the parent comment of a reply and embeds it before the comment text of the reply. In the form [MAIN] Parent [REPLY] Child |
