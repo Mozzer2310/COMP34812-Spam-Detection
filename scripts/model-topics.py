@@ -148,7 +148,7 @@ def output_to_csv(topics_dict, dataset_dict, file_name='topics'):
         file_name (str): output file name
     """
     # Specify output path
-    OUTPUT_PATH = '../data/'
+    OUTPUT_PATH = '../data/topics'
 
     # Write to .csv file
     full_path = f"{OUTPUT_PATH}{file_name}-topics.csv"
