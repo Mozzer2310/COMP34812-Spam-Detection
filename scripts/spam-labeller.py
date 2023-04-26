@@ -4,29 +4,55 @@ from tempfile import NamedTemporaryFile
 import shutil
 
 fields = ["video_id", "video_name", "channel_name",
-              "comment_id", "comment", "username", "class"]
+          "comment_id", "comment", "username", "class"]
 index = 0
 max_length = 400
 
+
 def truncateComment(commentText):
+    """Truncates a comment to reduce its length so it fits inside the GUI
+
+    Args:
+        commentText (_type_): The tkiner StringVar that holds the text of the comment
+
+    Returns:
+        _type_: A truncated string to shorten the length of the comment
+    """
     partition = commentText.partition("[REPLY]")
     if partition[1] == '':
         return (commentText[:max_length*2] + '..(TRUNCATED)') if len(commentText) > max_length*2 else commentText
     else:
-        mainText = (partition[0][:max_length] + '..(TRUNCATED)') if len(partition[0]) > max_length else partition[0]
-        replyText = (partition[2][:max_length] + '..(TRUNCATED)') if len(partition[2]) > max_length else partition[2]
+        mainText = (partition[0][:max_length] + '..(TRUNCATED)') if len(
+            partition[0]) > max_length else partition[0]
+        replyText = (partition[2][:max_length] + '..(TRUNCATED)') if len(
+            partition[2]) > max_length else partition[2]
         return f"{mainText} [REPLY] {replyText}"
 
+
 def btnHam(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText):
+    """Updates the row in the csv for the current comment with the class set to 'ham'
+
+    Args:
+        commentIDText (_type_): The tkiner StringVar that holds the comment ID
+        commentText (_type_): The tkiner StringVar that holds the comment text
+        authorText (_type_): The tkiner StringVar that holds the author of the comment
+        contextText (_type_): The tkiner StringVar that holds the context of the video
+        titleText (_type_): The tkiner StringVar that holds the title of the video
+        classText (_type_): The tkiner StringVar that holds the class of the video
+        countText (_type_): The tkiner StringVar that holds the count of labelled comments text
+        channelText (_type_): The tkiner StringVar that holds the channel name text
+    """
     global comment_count
-    '''if button is clicked, display message'''
     print("Ham.")
 
+    # Creates a temporary file
     tempfile = NamedTemporaryFile(mode='w', delete=False)
 
     with open(filename, 'r') as csvfile, tempfile:
         reader = csv.DictReader(csvfile, fieldnames=fields)
         writer = csv.DictWriter(tempfile, fieldnames=fields)
+
+        # Finds the row in the csv matching the current comment from the GUI and set its class to 'ham'
         for row in reader:
             if row['comment_id'] == str(commentIDText.get()):
                 print('updating row', row['comment_id'])
@@ -42,24 +68,42 @@ def btnHam(commentIDText, commentText, authorText, contextText, titleText, class
                 'class': row['class']}
             writer.writerow(row)
 
+    # Moves the temp file to the current file
     shutil.move(tempfile.name, filename)
 
+    # Increments the count of labelled comments and sets the text
     comment_count += 1
     countText.set(f"{comment_count}/{total_comments}")
 
-    btnNext(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText)
+    # Goes to the next comment
+    btnNext(commentIDText, commentText, authorText, contextText,
+            titleText, classText, countText, channelText)
 
 
 def btnSpam(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText):
     global comment_count
-    '''if button is clicked, display message'''
+    """Updates the row in the csv for the current comment with the class set to 'spam'
+
+    Args:
+        commentIDText (_type_): The tkiner StringVar that holds the comment ID
+        commentText (_type_): The tkiner StringVar that holds the comment text
+        authorText (_type_): The tkiner StringVar that holds the author of the comment
+        contextText (_type_): The tkiner StringVar that holds the context of the video
+        titleText (_type_): The tkiner StringVar that holds the title of the video
+        classText (_type_): The tkiner StringVar that holds the class of the video
+        countText (_type_): The tkiner StringVar that holds the count of labelled comments text
+        channelText (_type_): The tkiner StringVar that holds the channel name text
+    """
     print("Spam.")
 
+    # Creates a temporary file
     tempfile = NamedTemporaryFile(mode='w', delete=False)
 
     with open(filename, 'r') as csvfile, tempfile:
         reader = csv.DictReader(csvfile, fieldnames=fields)
         writer = csv.DictWriter(tempfile, fieldnames=fields)
+
+        # Finds the row in the csv matching the current comment from the GUI and set its class to 'spam'
         for row in reader:
             if row['comment_id'] == str(commentIDText.get()):
                 print('updating row', row['comment_id'])
@@ -75,23 +119,42 @@ def btnSpam(commentIDText, commentText, authorText, contextText, titleText, clas
                 'class': row['class']}
             writer.writerow(row)
 
+    # Moves the temp file to the current file
     shutil.move(tempfile.name, filename)
 
+    # Increments the count of labelled comments and sets the text
     comment_count += 1
     countText.set(f"{comment_count}/{total_comments}")
 
-    btnNext(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText)
+    # Goes to the next comment
+    btnNext(commentIDText, commentText, authorText, contextText,
+            titleText, classText, countText, channelText)
+
 
 def btnNeutral(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText):
+    """Updates the row in the csv for the current comment with the class set to 'neutral'
+
+    Args:
+        commentIDText (_type_): The tkiner StringVar that holds the comment ID
+        commentText (_type_): The tkiner StringVar that holds the comment text
+        authorText (_type_): The tkiner StringVar that holds the author of the comment
+        contextText (_type_): The tkiner StringVar that holds the context of the video
+        titleText (_type_): The tkiner StringVar that holds the title of the video
+        classText (_type_): The tkiner StringVar that holds the class of the video
+        countText (_type_): The tkiner StringVar that holds the count of labelled comments text
+        channelText (_type_): The tkiner StringVar that holds the channel name text
+    """
     global comment_count
-    '''if button is clicked, display message'''
     print("Neutral.")
 
+    # Creates a temporary file
     tempfile = NamedTemporaryFile(mode='w', delete=False)
 
     with open(filename, 'r') as csvfile, tempfile:
         reader = csv.DictReader(csvfile, fieldnames=fields)
         writer = csv.DictWriter(tempfile, fieldnames=fields)
+
+        # Finds the row in the csv matching the current comment from the GUI and set its class to 'neutral'
         for row in reader:
             if row['comment_id'] == str(commentIDText.get()):
                 print('updating row', row['comment_id'])
@@ -107,17 +170,34 @@ def btnNeutral(commentIDText, commentText, authorText, contextText, titleText, c
                 'class': row['class']}
             writer.writerow(row)
 
+    # Moves the temp file to the current file
     shutil.move(tempfile.name, filename)
 
+    # Increments the count of labelled comments and sets the text
     comment_count += 1
     countText.set(f"{comment_count}/{total_comments}")
 
-    btnNext(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText)
+    # Goes to the next comment
+    btnNext(commentIDText, commentText, authorText, contextText,
+            titleText, classText, countText, channelText)
 
-def btnNext(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText):
+
+def btnNext(commentIDText, commentText, authorText, contextText, titleText, classText, channelText):
+    """Displays the next comment from the csv
+
+    Args:
+        commentIDText (_type_): The tkiner StringVar that holds the comment ID
+        commentText (_type_): The tkiner StringVar that holds the comment text
+        authorText (_type_): The tkiner StringVar that holds the author of the comment
+        contextText (_type_): The tkiner StringVar that holds the context of the video
+        titleText (_type_): The tkiner StringVar that holds the title of the video
+        classText (_type_): The tkiner StringVar that holds the class of the video
+        channelText (_type_): The tkiner StringVar that holds the channel name text
+    """
     global index
-    '''if button is clicked, display message'''
     print("Next.")
+
+    # Sets the textvariable of the relevant parts of the comment to the next comment
     commentIDText.set(commentIDs[index])
     commentText.set(truncateComment(comments[index]))
     authorText.set(authors[index])
@@ -125,13 +205,29 @@ def btnNext(commentIDText, commentText, authorText, contextText, titleText, clas
     titleText.set(titles[index])
     classText.set(classes[index])
     channelText.set(channels[index])
+
+    # increments the index value
     index += 1
 
-def btnPrev(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText):
+
+def btnPrev(commentIDText, commentText, authorText, contextText, titleText, classText, channelText):
+    """Displays the previous comment from the csv
+
+    Args:
+        commentIDText (_type_): The tkiner StringVar that holds the comment ID
+        commentText (_type_): The tkiner StringVar that holds the comment text
+        authorText (_type_): The tkiner StringVar that holds the author of the comment
+        contextText (_type_): The tkiner StringVar that holds the context of the video
+        titleText (_type_): The tkiner StringVar that holds the title of the video
+        classText (_type_): The tkiner StringVar that holds the class of the video
+        channelText (_type_): The tkiner StringVar that holds the channel name text
+    """
     global index
-    '''if button is clicked, display message'''
     print("Prev.")
+    # Decrements the index value to the previous comment (-2 as the current index is 1 ahead)
     index += -2
+
+    # Sets the textvariable of the relevant parts of the comment to the next comment
     commentIDText.set(commentIDs[index])
     commentText.set(truncateComment(comments[index]))
     authorText.set(authors[index])
@@ -139,18 +235,30 @@ def btnPrev(commentIDText, commentText, authorText, contextText, titleText, clas
     titleText.set(titles[index])
     classText.set(classes[index])
     channelText.set(channels[index])
+
+    # increments the index value
     index += 1
 
-def btnClear(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText):
+
+def btnClear(commentIDText, classText, countText):
+    """Sets the class of the current comment to 0 (undefined)
+
+    Args:
+        commentIDText (_type_): The tkiner StringVar that holds the comment ID
+        classText (_type_): The tkiner StringVar that holds the class of the video
+        countText (_type_): The tkiner StringVar that holds the count of labelled comments text
+    """
     global comment_count
     '''if button is clicked, display message'''
     print("Clear.")
 
+    # Creates a temporary file
     tempfile = NamedTemporaryFile(mode='w', delete=False)
 
     with open(filename, 'r') as csvfile, tempfile:
         reader = csv.DictReader(csvfile, fieldnames=fields)
         writer = csv.DictWriter(tempfile, fieldnames=fields)
+        # Finds the row in the csv matching the current comment from the GUI and set its class to '0'
         for row in reader:
             if row['comment_id'] == str(commentIDText.get()):
                 print('updating row', row['comment_id'])
@@ -168,12 +276,17 @@ def btnClear(commentIDText, commentText, authorText, contextText, titleText, cla
 
     classText.set(classes[index-1])
 
+    # Decrements the labelled counter and displays the result
     comment_count -= 1
     countText.set(f"{comment_count}/{total_comments}")
 
+    # Moves the temp file to the current file
     shutil.move(tempfile.name, filename)
 
+
 def createWindow():
+    """Creates the tkinter GUI for the program
+    """
     root = tk.Tk()  # create root window
     root.title("Label Comments")
     root.maxsize(900,  600)  # width x height
@@ -205,7 +318,8 @@ def createWindow():
     internal_count_frame.grid(row=0, column=0, padx=5, pady=5)
     tk.Label(internal_count_frame, text="Number of Labelled Comments: ").grid(
         row=0, column=0, padx=5,  pady=5,  sticky='w'+'e'+'n'+'s')
-    tk.Label(internal_count_frame, textvariable=countText).grid(row=0, column=1, padx=5, pady=5, sticky='w'+'e'+'n'+'s')
+    tk.Label(internal_count_frame, textvariable=countText).grid(
+        row=0, column=1, padx=5, pady=5, sticky='w'+'e'+'n'+'s')
 
     # Buttons
     tk.Button(bottom_frame, text="CLEAR", command=lambda: btnClear(commentIDText, commentText, authorText, contextText, titleText, classText, countText, channelText)).grid(
@@ -239,7 +353,7 @@ def createWindow():
         row=0, column=0, padx=5,  pady=5,  sticky='w'+'e'+'n'+'s')
     tk.Label(title_frame, textvariable=titleText, wraplength=500, justify=tk.LEFT).grid(
         row=0, column=1, padx=5,  pady=5, sticky='w'+'e'+'n'+'s')
-    
+
     # Video Channel Name
     channel_frame = tk.Frame(top_frame)
     channel_frame.grid(row=2, column=0, padx=5, pady=5)
@@ -285,6 +399,7 @@ def createWindow():
     tk.Label(comment_frame, textvariable=commentText,
              wraplength=500, justify=tk.LEFT).grid(row=0, column=1, padx=5,  pady=5,  sticky='w'+'e'+'n'+'s')
 
+    # Runs the loop of the GUI
     root.mainloop()
 
 
@@ -298,11 +413,14 @@ if __name__ == "__main__":
     classes = []
     channels = []
     comment_count = 0
-    
+
+    # Take user input for the file name and append folder path
     filename = input("Please enter a filename for the CSV: ")
     if filename[-4:] != '.csv':
         filename += '.csv'
     filename = "../data/labelled/" + filename
+
+    # Read in all the comments from the csv and store the relevant parts in their respective lists
     with open(filename, mode='r', encoding='utf8') as csv_file:
         csv_reader = csv.DictReader(csv_file)
         total_comments = 0
@@ -322,6 +440,5 @@ if __name__ == "__main__":
             else:
                 comment_count += 1
 
-        # print(line_count)
-
+    # Creates the tkinter window
     createWindow()
