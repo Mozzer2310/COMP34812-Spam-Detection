@@ -11,11 +11,14 @@ DEVELOPER_KEY = config.api_key
 youtube = googleapiclient.discovery.build(
     api_service_name, api_version, developerKey=DEVELOPER_KEY)
 
-def getComments(videoId: str) -> list:
-    """Retrives all the comments from a YouTube video and stores them in a .csv file
+def getComments(videoId: str) -> tuple:
+    """Takes a video ID of a YouTube video and retrieves the top 100 comments, and their replies, as well as the video title
 
     Args:
-        videoId (str): The YouTube video ID of a video
+        videoId (str): The video ID of a YouTube video
+
+    Returns:
+        tuple: a list holding the comments of the video, and a string holding the title of the video
     """
     request = youtube.videos().list(
         part="snippet",
