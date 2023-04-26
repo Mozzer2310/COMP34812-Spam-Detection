@@ -15,8 +15,9 @@ Our data was gathered by ourselves making use of the [YouTube Data API](https://
 ## Model/Network
 <!-- Explain the general model, any deviations from the proposal -->
 
-## Demo
+## Showcase
 <!-- Explain what the demo is, and its purpose -->
+The showcase loads our pretrained model, allowing a user to provide example data for a specified YouTube video, so that the model can make predictions in real-time and classify the user provided examples.
 
 ## Achievements
 <!-- Short overview of the achievement of the project -->
